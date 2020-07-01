@@ -1,0 +1,264 @@
+FUNCTIONAL PROGRAMMING WITH JAVA:
+
+ 
+ 
+        repository:   https://github.com/in28minutes/functional-programming-with-java
+
+        list.stream() 
+
+            - returns a sequential Stream with this collection an it's source
+            
+            - Then you can specify what to to with each of them
+
+            - To define the behavior, we use something called a Method Reference
+
+
+                        private static void print(int number) {
+                            System.out.println(number);
+                        }
+
+                        private static void printAllNumbersInListFunctional(List<Integer> numbers) {
+                            numbers.stream()
+                                    .forEach(FP01Functional::print);
+                        }
+
+
+                => For each of these elements which are coming out, we call the print method is present in the  current class.
+
+
+
+FUNCTIONAL PROGRAMMING WITH FILTER:
+
+
+
+                            public static void main(String[] args) {
+                                List<Integer> numbers = List.of(12, 9 , 13, 4, 6, 2, 4, 12, 15);
+                               
+                                printEvenNumbersInListFunctional(numbers);
+                            }
+
+                            private static boolean isEven(int number) {
+                                return number%2 == 0;
+                            }
+
+                
+                            private static void printEvenNumbersInListFunctional(List<Integer> numbers) {
+                                numbers.stream()
+                                        .filter(FP01Functional::isEven)
+                                        .forEach(System.out::println);
+                            }
+
+
+                => If static method returns true back, only then go to the next line of code.
+
+
+
+USING LAMBDA EXPRESSIONS TO ENHANCE  FUNCTIONAL PROGRAM:
+
+
+        Lambda Expression 
+
+            - Nothing but a simpler way to defining another method
+
+                => Lambda Expression is nothing but a method.
+
+
+                number -> number%2 == 0
+
+                    - take the number and check if number%2 == 0 and return it back
+                
+                - By default in Lambda Expressions, if you just have one statement present, it will return
+                  that value back
+
+
+                            private static void printAllNumbersInListFunctional(List<Integer> numbers) {
+                                numbers.stream()
+                                        .forEach(System.out::println);
+                            }
+
+                            private static void printEvenNumbersInListFunctional(List<Integer> numbers) {
+                                numbers.stream()
+                                        .filter(number -> number%2 == 0)
+                                        .forEach(System.out::println);
+                            }
+
+
+
+                    => In the Functional Programming we are focusing on what to do.
+
+                    => A Stream is nothing but a sequenceof elements.
+
+                    => With a Lambda Expression you can define the entire code directly in here.
+
+                    => With a Method Reference we are actually referring to a method which is defined somewhere else.
+
+
+
+            public class FP01Exercises {
+
+            public static void main(String[] args) {
+                List<Integer> numbers = List.of(12, 9 , 13, 4, 6, 2, 4, 12, 15);
+                List<String> courses = List.of("Spring", "Spring Boot", "API", "Microservices", "AWS",
+                        "PCF", "Azure", "Docker", "Kubernetes");
+                printOddNumbersInListFunctional(numbers);
+                printAllCoursesIndividually(courses);
+                printCoursesContainingWordSpring(courses);
+                printCoursesWhoseNameAtLeast4Letters(courses);
+
+            }
+
+            private static void printCoursesWhoseNameAtLeast4Letters(List<String> courses) {
+                courses.stream()
+                        .filter(course -> course.length() >= 4)
+                        .forEach(System.out::println);
+            }
+
+            private static void printCoursesContainingWordSpring(List<String> courses) {
+                courses.stream()
+                        .filter(course -> course.contains("Spring"))
+                        .forEach(System.out::println);
+            }
+
+            private static void printAllCoursesIndividually(List<String> courses) {
+                courses.stream()
+                        .forEach(System.out::println);
+            }
+
+            private static void printOddNumbersInListFunctional(List<Integer> numbers) {
+                numbers.stream()
+                        .filter(x -> x%2 != 0)
+                        .forEach(System.out::println);
+            }
+        }
+
+
+
+
+
+USING MAP IN FUNCTIOAL PROGRAMS:
+
+
+
+            private static void printSquaresOfEvenNumbersInListFunctional(List<Integer> numbers) {
+            numbers.stream()
+                    .filter(number -> number%2 == 0)
+                    .map(number -> number * number)
+                    .forEach(System.out::println);
+            }
+
+            private static void printCubesOfOddNumbersInListFunctional(List<Integer> numbers) {
+                numbers.stream()
+                        .filter(number -> number%2 != 0)
+                        .map(number -> (int)Math.pow(number, 3))
+                        .forEach(System.out::println);
+            }
+
+            private static void printNumberOfCharactersInEachCourseName(List<String> courses) {
+                courses.stream()
+                        .map(course -> course + " " + course.length())
+                        .forEach(System.out::println);
+            }
+
+
+
+
+REVIEW OF  FUNCTIONAL PROGRAMMING BASICS:
+
+
+        - In Functional Programming we focus on specifying what to do.
+
+        - Stream - is a sequence of elements
+
+        - For each element we specified what needs to be done with it.
+
+        - Filter() allows us to specify a condition. Only if that condition is matched, then the element would go further.
+          Otherwise, this element will be filtered out.
+
+        - ForEach() is used to consume an element. For example you take an element and print it.
+
+        - Map() - we use this to map one value to another value. 
+
+        - Lambda Expression is nothing but a simplified representation of method.
+
+        
+
+STREAM OPERATIONS - REDUCE - CALCULATE SUM:
+
+
+                numbers.stream().reduce(0, FP02Functional::sum)
+
+                0 - initial value
+
+                - and then we would specify what is the method that can be used to redue the list, using the Method Reference;
+
+
+                public class FP02Functional {
+
+                    public static void main(String[] args) {
+                        List<Integer> numbers = List.of(12, 9 , 13, 4, 6, 2, 4, 12, 15);
+
+                        int sum = addListFunctional(numbers);
+                        System.out.println(sum);
+                    }
+
+                    public static int sum(int a, int b) {
+                        return a + b;
+                    }
+
+                    public static int addListFunctional(List<Integer> numbers) {
+                        // Combine them into one result => One Value
+                        // 0 and (a, b) -> a + b  FP02Functional::sum
+                        return  numbers.stream()
+                                .reduce(0, FP02Functional::sum);   // o - initial value
+                        
+                    }
+                }
+
+
+            
+            public class FP02Functional {
+
+                public static void main(String[] args) {
+                    List<Integer> numbers = List.of(12, 9 , 13, 4, 6, 2, 4, 12, 15);
+
+                    int sum = addListFunctional(numbers);
+                    System.out.println(sum);
+                }
+                
+                public static int addListFunctional(List<Integer> numbers) {
+                    return  numbers.stream()
+                            .reduce(0, (x, y) -> x + y);     //  .reduce(Integer::sum);
+                }
+            }
+
+
+
+JSHELL:
+
+
+        jshell in Terminal will launch up Jshell Console
+
+
+        - Find maximum:
+
+             numbers.stream().reduce(0, (x,y) ->  x>y ? x :y)  - this logic will work foe positive numbers
+
+        - For negative numbers too:
+
+            numbers.stream().reduce(Integer.MIN_VALUE, (x,y) ->  x>y ? x :y)
+
+        
+        - For finding MIN value:
+
+
+            numbers.stream().reduce(Integer.MAX_VALUE, (x,y) ->  x<y?x:y)
+
+
+
+
+STREAM OPERATIONS - DISTINCT AND SORTED:
+
+
+        
+
+            

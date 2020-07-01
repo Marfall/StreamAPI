@@ -1,6 +1,7 @@
 package programming;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FP02Exercises {
 
@@ -12,6 +13,8 @@ public class FP02Exercises {
         System.out.println(squareAndSum(numbers));
         System.out.println(cubeAndSum(numbers));
         System.out.println(sumOfOddNumbers(numbers));
+        System.out.println(createlistWithEvenNumbersFromNumbersList(numbers));
+        System.out.println(createListWithLengthsOfTitles(courses));
 
 
 
@@ -33,6 +36,18 @@ public class FP02Exercises {
         return numbers.stream()
                 .filter(number -> number%2 != 0)
                 .reduce(0, Integer::sum);
+    }
+
+    public static List<Integer> createlistWithEvenNumbersFromNumbersList(List<Integer> numbers) {
+        return numbers.stream()
+                .filter(number -> number%2 == 0)
+                .collect(Collectors.toList());
+    }
+
+    public static List<String> createListWithLengthsOfTitles(List<String> cources) {
+        return cources.stream()
+                .map(course -> course + " " + course.length() + "\n")
+                .collect(Collectors.toList());
     }
 
 

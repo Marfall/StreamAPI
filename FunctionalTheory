@@ -259,6 +259,85 @@ JSHELL:
 STREAM OPERATIONS - DISTINCT AND SORTED:
 
 
-        
+        Distinct:
+
+            numbers.stream().distinct().forEach(System.out::println)  
+
+                -excludes duplicates
+
+        Sorted:
+
+            numbers.stream().sorted().distinct().forEach(System.out::println)
+
+                - will sort numbers
+
+
+
+USING COMPARATORS TO SORT STREAMS WITH SORTED:
+
+
+        courses.stream().sorted(Comparator.).forEach(System.out::println);   //for reverse order   
+
+
+        - For custom compare you can define a Lambda Expression: 
+
+        courses.stream().sorted(Comparator.comparing(str -> str.length())).forEach(System.out::println);
+
+        - Custom Comparator with String and lambda:
+
+            courses.stream().sorted(Comparator.comparing(x -> x.toString().length()).reversed()).forEach(System.out::println);
+
+            courses.stream().sorted(Comparator.comparing(String::length).reversed()).forEach(System.out::println);
+
+
+
+
+COLLECTING STREAM ELEMENTS USING COLLECT:
+
+
+        - You can create another list, based on the current list => output is another List;
+
+
+        .collect(Collectors.toList())   - collect all the resulys to a list
+
+
+        Long count = numbers.stream()                        - counts elements in collection
+                .map(number -> number * number)
+                .count();    
+
+
+
+        public static List<String> createListWithLengthsOfTitles(List<String> cources) {
+            return cources.stream()
+                    .map(course -> course + " " + course.length() + "\n")
+                    .collect(Collectors.toList());
+        }
+
+
+
+
+
+STREAM OPERATIONS OVERVIEW:
+
+
+        - Operations, that you can perform on a stream can be categorized into to varietes:
+
+            - Intermediate Operations;
+
+            - Terminal Operations;
+
+
+        - All Intermediate Operations perform on a Stream and return a Stream back.
+
+        - Terminal Operations Operations return a Specific Type.
+
+
+
+        => So, whenever we do something with a stream, we get the Stream, perform a number of
+           Intermediate Operations and then at the end, do a Terminal Operation to get the result from it
+           or to do something with the elements which are present in the stream.
+
+
+
 
             

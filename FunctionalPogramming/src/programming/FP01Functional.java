@@ -1,5 +1,6 @@
 package programming;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class FP01Functional {
@@ -15,7 +16,8 @@ public class FP01Functional {
 //        printCoursesWhoseNameAtLeast4Letters(courses);
 //        printSquaresOfEvenNumbersInListFunctional(numbers);
 //        printCubesOfOddNumbersInListFunctional(numbers);
-          printNumberOfCharactersInEachCourseName(courses);
+//          printNumberOfCharactersInEachCourseName(courses);
+          printCompareOrder(courses);
 
     }
 
@@ -72,5 +74,9 @@ public class FP01Functional {
         courses.stream()
                 .map(course -> course + " " + course.length())
                 .forEach(System.out::println);
+    }
+
+    public static void printCompareOrder(List<String> courses ) {
+        courses.stream().sorted(Comparator.comparing(String::length).reversed()).forEach(System.out::println);
     }
 }

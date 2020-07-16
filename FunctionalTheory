@@ -340,4 +340,215 @@ STREAM OPERATIONS OVERVIEW:
 
 
 
+FUNCTIONAL INTERFACES - PREDICATE, CONSUMER, FUNCTION:
+
+
+        - How are able to pass a method code to another method:
+
+             boolean isEven(int x) {           
+                return x%2 == 0;
+            }
+
+        - Lambda  x -> x%2 == o;   - is representation of this method.
+
+
+        - System.out::println - is a Method Reference and it's actually simplification for a Lambda.
+
+            (x -> System.out::println)   =   (x -> System.out.println(x))
+
+
+        - What's happening in the background:
+
+            public static void main(String[] args) {
+                List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+
+                Predicate<Integer> isEvenPredicate = x -> x%2 ==0;
+                Function <Integer, Integer> squareFunction = x -> (int)Math.pow(x, 2);
+                Consumer<Integer> sysoutConsumer = System.out::println;
+
+                numbers.stream()
+                        .filter(isEvenPredicate)
+                        .map(squareFunction)
+                        .forEach(sysoutConsumer);
+            }
+
+            => When we creating a lambda expression of this kind:
+
+                x -> x%2 ==0
             
+            - An Instance of Predicate class was being created.
+
+            - For this specific thing, an Instance of a Function class was being created
+
+            - How do the work:
+
+            - Functional Interface - is something which has only one abstract method;
+
+
+             Predicate<Integer> isEvenPredicate2 = new Predicate<Integer>() {
+                @Override
+                public boolean test(Integer x) {
+                    return x%2 == 0;
+                }
+            };
+
+            - What's happening:
+
+                - In Instance of Predicate class with this specific logic is getting created for us.
+
+                - Something similar to this is created for us and in's being used to pass this specific thing to the filter.
+
+                - A Predicate typically used to test something. So you can see that it represents 
+                  a Predicate - a Bollean-Valued Function of One Argument.
+
+                => What id does:
+
+                    - You pass one argument to it, the Return Type is Boolean.
+                    - You can write logic around that object and return a Bollean back.
+
+            
+        FUNCTION:
+
+            - Function<T, R> 
+
+            - Represents a function that accepts one argument and produces a result.
+
+            - We are taking one input and we are producing one output:
+
+              Function<Integer, Integer> squareFunction = x -> x * x;
+
+
+              Function<Integer, Integer> squareFunction = new Function<Integer, Integer>() {
+
+                  @Override
+                  public Integer apply(Integer x) {
+                      return x * x;
+                  }
+              };
+
+
+
+        CONSUMER:
+
+
+            - It consumes whatever it gets.
+
+            - Represents an operation that acepts a single input argument and returns no result.
+
+            - Consumer<T>
+
+              Consumer<Integer> sysoutConsumer = System.out::println; 
+
+              Consumer<Integer> sysoutConsumer = new Consumer<Integer>
+
+            - void accept(T t) - performs operation on the given argument;
+
+
+            Consumer<Integer> sysoutConsumer = System.out::println;
+
+            Consumer<Integer> sysoutConsumer = new Consumer<Integer>() {
+                
+                @Overridepublic void accept(Integer x) {
+                    
+                    System.oot.println(x);
+                }
+            };
+
+
+        - Behind each Lambda Experssion that we write is something called a Functional Interface;
+
+        - One which is used when we are using filter(). It's a Predicate;
+          So, with a filter we are defining a condition, we take a input and return back boolean;
+
+        - Map() is actually take a input and customizes it and returns an output.
+          So, you have one input and one output and that's where we use a Function;
+
+        - And forEach() ia a Consumer - it takes the input and it consumes it.
+
+            
+        - Typically, Abstract Method is called a Function Descriptor;
+
+
+
+BEHAVIOR PARAMETERIZATION:
+
+
+        Prediate<Integer> isEvenPredicate = x -> x%2 == 0;  
+
+        x -> x%2 == 0    -  is the Behavior of this specific Method.
+
+        - Here we're taking the behavior of the method and actually putting it into a Variable.
+
+        - Can we use this and pass this as an argument to another method? 
+
+        - Can we create a Custom Method like that?
+
+
+
+            public class FP03BehaviorParameterization {
+
+                @SuppressWarnings("unused")
+                public static void main(String[] args) {
+                    List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+
+                    Predicate<Integer> evenPredicate = x -> x % 2 == 0;
+                    filterAndPrint(numbers, evenPredicate);
+
+                    Predicate<Integer> oddPredicate = x -> x % 2 != 0;
+                    filterAndPrint(numbers, oddPredicate);
+                }
+
+                private static void filterAndPrint(List<Integer> numbers, Predicate<Integer> predicate) {
+                    numbers.stream()
+                            .filter(predicate)
+                            .forEach(System.out::println);
+                }
+            }  
+
+
+            
+            - We are passing the predicate as another argument. so we can pass in whether I would want to print even numbers
+              or odd numbers as a argument to this particular method and you see that that is wahat is being  used to filter in here.
+
+            - Now I'll do a inline variable to inline the evenPredicate.
+
+            - So, what we are doing:
+
+                - We are passing the logic of the method as an argument of the method, we are passing the behavior of the
+                  method as an argument.
+
+                - And this is what is called Behavior Parameterization;
+
+                - We are passing an algorithm, the strategy, as a parameter. 
+
+                - And this would provide a lot of flexibility in how we code.
+
+
+
+
+        public class FP03Exercises {                                                                                                                
+                                                                                                                                            
+            public static void main(String[] args) {                                                                                                
+                List<Integer> numbers = List.of(12, 9 , 13, 4, 6, 2, 4, 12, 15);                                                                    
+                List<String> courses = List.of("Spring", "Spring Boot", "API", "Microservices", "AWS",                                              
+                        "PCF", "Azure", "Docker", "Kubernetes");                                                                                    
+                                                                                                                                                    
+                Integer sum = fiml(numbers);                                                                                                        
+                System.out.println(sum);                                                                                                            
+                                                                                                                                                    
+                List<Integer> squaredNumbers = mapAndCreateNewList(numbers, x -> x * x);                                                            
+                                                                                                                                                    
+                List<Integer> cubeNumbers = mapAndCreateNewList(numbers, x -> (int)Math.pow(x, 3));                                                 
+                                                                                                                                                    
+                List<Integer> doubleNumbers = mapAndCreateNewList(numbers, x -> x + x);                                                             
+                                                                                                                                                    
+                System.out.println(squaredNumbers);                                                                                                 
+                System.out.println(cubeNumbers);                                                                                                    
+                System.out.println(doubleNumbers);                                                                                                  
+            }                                                                                                                                       
+                                                                                                                                                    
+            private static List<Integer> mapAndCreateNewList(List<Integer> numbers, Function<Integer, Integer> mappingFunction) {                   
+                return numbers.stream()                                                                                                             
+                                .map(mappingFunction)                                                                                               
+                                .collect(Collectors.toList());                                                                                      
+            }                                                                                                                                       

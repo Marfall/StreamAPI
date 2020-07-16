@@ -49,7 +49,4 @@ public class FP02Exercises {
                 .map(course -> course + " " + course.length() + "\n")
                 .collect(Collectors.toList());
     }
-
-
-
 }

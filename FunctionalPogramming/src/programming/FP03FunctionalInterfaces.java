@@ -1,9 +1,8 @@
 package programming;
 
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Random;
+import java.util.function.*;
 
 public class FP03FunctionalInterfaces {
 
@@ -26,5 +25,34 @@ public class FP03FunctionalInterfaces {
                 .filter(isEvenPredicate)
                 .map(squareFunction)
                 .forEach(sysoutConsumer);
+
+        Supplier<Integer> randomIntegerSupplier = () -> {
+            Random random  = new Random();
+            return random.nextInt(1000);
+        };
+        System.out.println(randomIntegerSupplier.get());
+
+        UnaryOperator<Integer> unaryOperator = (x) -> x * 3;
+        System.out.println(unaryOperator.apply(3));
+
+        BiPredicate<Integer, String> biPredicate = (number, str) -> number < 10 && str.length() > 5;
+
+        System.out.println(biPredicate.test(7, "tessdfsdf"));
+
+        BiFunction<Integer, String, String> biFunction = (number, str) -> number + " " +  str;
+
+        System.out.println(biFunction.apply(7, "test"));
+
+        BiConsumer<String, String> biConsumer = (s1, s2) -> {
+            System.out.println(s1);
+            System.out.println(s2);
+        };
+
+        biConsumer.accept("15", "in28minutes");
+
+        IntToDoubleFunction intToDoubleFunction = (x) -> x;
+
+        System.out.println(intToDoubleFunction.applyAsDouble(5));
+
     }
 }

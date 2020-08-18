@@ -3,6 +3,7 @@ package programming;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class FP03Exercises {
@@ -24,6 +25,7 @@ public class FP03Exercises {
         System.out.println(squaredNumbers);
         System.out.println(cubeNumbers);
         System.out.println(doubleNumbers);
+
     }
 
     private static List<Integer> mapAndCreateNewList(List<Integer> numbers, Function<Integer, Integer> mappingFunction) {
@@ -31,7 +33,7 @@ public class FP03Exercises {
                         .map(mappingFunction)
                         .collect(Collectors.toList());
     }
-
+                                                              
 
     public static Integer fiml(List<Integer> numbers) {
 

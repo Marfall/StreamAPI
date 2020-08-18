@@ -551,4 +551,297 @@ BEHAVIOR PARAMETERIZATION:
                 return numbers.stream()                                                                                                             
                                 .map(mappingFunction)                                                                                               
                                 .collect(Collectors.toList());                                                                                      
-            }                                                                                                                                       
+            }         
+
+
+
+
+SUPPLIER  AND UNARY OPERATOR FUNCTIONAL INTERFACES:
+
+
+        Function<Integer, String> stringOutputFunction = x -> x + " ";    - will return String
+
+        BinaryOperator<Integer> sumBinaryOperator = (x, y) -> x + y;
+
+        Supplier:
+
+            - Is a situation where you don't have any input. So, you don't have any parameters as input and we would
+              want to return something back. For example a Factory Pattern.
+
+
+        Supplier<Integer> randomIntegerSupplier =  () -> 2;
+
+        - Supplier has one abstract method get()    
+
+
+        Returning random set of values:
+
+
+              Supplier<Integer> randomIntegerSupplier = () -> {
+                Random random  = new Random();
+                return random.nextInt(1000);
+            };
+            System.out.println(randomIntegerSupplier.get());
+
+
+
+
+        UnaryOperator:
+
+            - Unary Operator will actually take one parameter as the input  and returns the result of the same type as the output;
+
+
+            UnaryOperator<Integer> unaryOperator = (x) 3 * x;
+
+            - Unary Operator has one abstract method apply();
+
+
+
+
+BIPREDICATE, BIFUNCTION, BICONSUMER AND PRIMITIVE FUNCTION: 
+
+
+    BiPredicate:
+
+        - We have 2 inputs to your lambda expression and we would want to return boolean;
+
+        - Has one abstract method test();
+
+
+        BiPredicate<Integer, String> biPredicate = (number, str) -> number < 10 && str.length() > 5;
+
+        System.out.println(biPredicate.test(7, "testString"));
+
+
+    BiFunction:
+
+        - Takes 2 inputs and return 1 value back;
+
+        - You need to specify a Return Type;
+
+        - Has 1 abstract method apply();
+
+
+
+
+        BiFunction<Integer, String, String> biFunction = (number, str) -> number + " " +  str;
+
+        System.out.println(biFunction.apply(7, "test"));
+
+
+    BiConsumer:
+
+        - BiConsumer takes 2 inputs and it consumes it, does not return anything back;
+
+        - Has 1 abstract method accept();
+
+
+        BiConsumer<String, String> biConsumer = (s1, s2) -> {
+            System.out.println(s1);
+            System.out.println(s2);
+        };
+
+        biConsumer.accept("15", "in28minutes");
+
+
+
+
+    => When you create Lambda Expression, you can use this specific interfaces to represent that specific Lambda Expression;
+
+
+    
+    PrimitiveFunctional:
+
+        - IntBinaryOperator
+
+        - IntConsumer
+
+        - IntFunction 
+
+        - IntPredicate
+
+        - IntSupplier 
+
+        - IntToDoubleFunction
+
+        - IntToLongFunction
+
+        - IntUnaryOperator
+
+
+
+        IntToDoubleFunction intToDoubleFunction = (x) -> x;
+
+        System.out.println(intToDoubleFunction.applyAsDouble(5));
+
+
+        - An important thing is, wherenever we are doing things with wrapper classes, boxing and unboxing comes 
+          into picture and that's's inefficient (неэффективно). 
+
+        - So, if you have a set of primitives and you'd want to play around them using Lambda Expressions,
+          it's better to use Primitive Lambda Expressions;
+
+
+        => Important thing that now all the operations are Primitive Operations, so there is no chance of boxing,
+           auto-boxing, and all those performance kind of issues coming in;
+
+        - Inside the List we can only have Wrapper-class elements or Wrapper-class Objects.
+
+        - Whenever you're playing with Primitives, you should prefer the Primitive Operations.
+
+
+
+
+METHOD REFERENCES:
+
+
+        List<String> courses = List.of("Spring", "Spring Boot", "API",
+                "Microservices", "AWS", "PCF", "Azure",
+                "Docker", "Kubernetes");
+
+        courses.stream()
+                .map(String::toUpperCase)
+                .forEach(System.out::println);
+
+
+        
+        -  For each elements inside the stream, the System.out.println would be called with that specific element passed 
+           as a parameter.
+
+
+        - We also saw the fact that we can actually create a static method in here and call it also from here:
+
+
+            public class FP03MethodReferences {
+
+                @SuppressWarnings("unused")
+                public static void main(String[] args) {
+
+                    List<String> courses = List.of("Spring", "Spring Boot", "API",
+                            "Microservices", "AWS", "PCF", "Azure",
+                            "Docker", "Kubernetes");
+
+                    courses.stream()
+                            .map(String::toUpperCase)
+                            .forEach(FP03MethodReferences::print);
+                }
+                
+                private static void print(String str) {
+                    System.out.println(str);
+                }
+            }
+
+
+
+        - The Interesting thing that you can also use Method References to call things on a specific object;
+
+        - Also you can use Method References for Constructor References:
+
+
+            Supplier<String>  supplier  =  ()  -> new String();
+
+                        <=>
+
+             Supplier<String>  supplier  = String::new;
+
+
+        - You can use this to create new Objects;
+
+
+
+
+ALLMATCH, NONEMATCH, ANYMATCH:
+
+
+        - We want to ind out, if all the courses have a review score greater than 90:
+
+
+            Predicate<Course> reviewScoreGreaterThan95Predicate = course -> course.getReviewScore() > 95;
+
+            Predicate<Course> reviewScoreGreaterThan90Predicate = course -> course.getReviewScore() > 90;
+
+            Predicate<Course> reviewScoreLessThan90Predicate = course -> course.getReviewScore() < 90;
+
+            System.out.println(courses.stream()
+                    .allMatch(reviewScoreGreaterThan90Predicate));
+
+            System.out.println(courses.stream()
+                    .noneMatch(reviewScoreGreaterThan95Predicate));
+
+            System.out.println(courses.stream()
+                    .noneMatch(reviewScoreLessThan90Predicate));
+
+            System.out.println(courses.stream()
+                    .anyMatch(reviewScoreGreaterThan90Predicate));
+
+
+        - allMatch() returns a true, if every element in this stream matches the condition;
+
+        - noneMatch() returns true, if no elements in the stream matches this condition;
+
+        - anyMatch() returns true, if at least one element in the stream matches that specific condition;
+
+
+
+
+SORTING. CREATING COMPARATORS:
+
+
+        - For sorting stream we need sorted() and pass in a Comparator:
+
+
+                Comparator<Course> comparingByNumberOfStudents = Comparator.comparing(Course::getNumberOfStudents);
+
+                System.out.println(courses.stream()
+                        .sorted(comparingByNumberOfStudents)
+                        .collect(Collectors.toList()));
+
+
+        - Comparing by Number Of Students Deceasing using reversed() and using no-aitoboxing primitive Comparing:
+
+
+                Comparator<Course> comparingByNoOfStudentsDecreasing = Comparator.comparingInt(Course::getNumberOfStudents).reversed();
+
+                System.out.println(courses.stream()
+                .sorted(comparingByNoOfStudentsDecreasing)
+                .collect(Collectors.toList()));
+
+
+        - If Course has the same number of Students use thenComparing():
+
+
+                Comparator<Course>  comparingByNumberOfStudentsAndReviews = Comparator.comparing(Course::getNumberOfStudents)
+                        .thenComparing(Course::getReviewScore)
+                        .reversed();
+
+                System.out.println(courses.stream()
+                        .sorted(comparingByNumberOfStudentsAndReviews)
+                        .collect(Collectors.toList()));
+
+
+
+
+SKIP, LIMIT, TAKEWHILE, DROPWHILE:
+
+
+
+        - Let's say, I don't want a complete List of Courses, so here, when I do a sort, I want to pick up only
+          the first five, the top 5 courses:
+
+        - The way I can do that is by using a Limit - I can take only first 5 results:
+
+
+              System.out.println(courses.stream()
+                .sorted(comparingByNumberOfStudentsAndReviews)
+                .limit(5)
+                .collect(Collectors.toList()));
+
+
+
+
+
+
+
+
+
+

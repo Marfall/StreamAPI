@@ -836,6 +836,207 @@ SKIP, LIMIT, TAKEWHILE, DROPWHILE:
                 .limit(5)
                 .collect(Collectors.toList()));
 
+        
+        - Let's say I would want to skip top 3 results:
+
+
+              System.out.println(courses.stream()
+                .sorted(comparingByNumberOfStudentsAndReviews)
+                .skip(3)
+                .collect(Collectors.toList()));
+
+
+        - Let's say I would want to take all elements until I find an element which is having a Review Score less than 95.
+          So, I would want to keep checking the list until I find a Course with Review Score less than 95 and as soon as I find it, I'd
+          want to return this stuff which I found earlier:
+
+
+                System.out.println(courses.stream()
+                    .takeWhile(course ->  course.getReviewScore() >= 95)
+                    .collect(Collectors.toList()));
+
+
+        - DropWhile() will keep cheking if this condition is true.
+          If condition is true - it will skip the elements:
+
+
+                 System.out.println(courses.stream()
+                    .dropWhile(course ->  course.getReviewScore() >= 95)
+                    .collect(Collectors.toList()));
+
+
+
+
+MAX, MIN, FINDFIRST, FINDANY:
+
+
+        - Find the Max course defined by criteria:
+
+                System.out.println(courses.stream()
+                    .max(comparingByNumberOfStudentsAndReviews));
+
+                result is:
+
+                    Optional[FullStack:14000:91]
+
+                - Here MAX - is the Last element of the list, it does not whether it's a higher value or lesser value,
+                  using this criteria of comparsion.
+
+
+        - MIN returns the first element:
+
+                 System.out.println(courses.stream()
+                    min(comparingByNumberOfStudentsAndReviews));
+
+
+        - What is Optional Stuff in here:
+
+                - if no result it will return Optional.empty
+
+                - Optional is a wat to get around NulPointerExceptions:
+
+                    - So, instead of returning a null back, you can return Optional.empty back
+
+                - Optional allows you to specify a default value.
+
+
+                    System.out.println(courses.stream()
+                        .min(comparingByNumberOfStudentsAndReviews)
+                        .orElse(new Course("Kubernetes", "Cloud", 91, 20000)));
+
+
+                - Here if it does not find any minimum value, it would return this value back,
+                  so, we are not really returning a null or something of that kind back;
+
+
+            => Optional provides you a way to check if a result exists or not
+
+
+        - FIND FIRST element which meets a certain criteria:
+
+            - findFirst() returns n Optional back;System.out.println(courses.stream()
+                .filter(reviewScoreLessThan90Predicate)
+                .findFirst());
+
+
+        - FIND ANY:
+
+            - findAny() atually returns any of the values, any of the elements from stream, which match this criteria.
+
+
+
+
+SUM, AVERAGE, COUNT:
+
+
+        -  We want to find average number of students for courses which have reviews greater than a specific value:
+
+
+                System.out.println(courses.stream()
+                    .filter(reviewScoreGreaterThan90Predicate)
+                    .mapToInt(Course::getNumberOfStudents)
+                    .average());
+
+
+                System.out.println(courses.stream()
+                    .filter(reviewScoreGreaterThan90Predicate)
+                    .mapToInt(Course::getNumberOfStudents)
+                    .sum());
+
+
+            - .sum() would give the total number of students who are in courses which have review score greater than 90.
+
+
+        - How many courses met the criteria:
+
+
+                  System.out.println(courses.stream()
+                    .filter(reviewScoreGreaterThan90Predicate)
+                    .mapToInt(Course::getNumberOfStudents)
+                    .count());
+        
+        
+        - Course with the MAX number of students:
+
+
+                System.out.println(courses.stream()
+                    .filter(reviewScoreGreaterThan90Predicate)
+                    .mapToInt(Course::getNumberOfStudents)
+                    .max());
+
+
+
+
+GROUPING COURSES TO A MAP USING GROUPINGBY:
+
+
+        - I want to group courses based on the category:
+
+        - I want to create HashMap, where the framework is the Key and these two courses as the values present against it;
+
+        - I need to define a Collectors:
+
+
+                System.out.println(courses.stream()
+                    .collect(Collectors.groupingBy(Course::getCategory)));
+
+
+                - Output:
+
+
+                        {Cloud=[AWS:21000:92, Azure:21000:99, Docker:21000:92, Kubernetes:20000:91],
+                        FullStack=[FullStack:14000:91], Microservices=[API:22000:97, Microservices:25000:96], 
+                        Framework=[Spring:20000:98, Spring Boot:18000:95]}
+
+
+        - I want to find how many FullStack Courses, how many CLoud Courses etc:
+
+
+                System.out.println(courses.stream()
+                    .collect(Collectors.groupingBy(Course::getCategory, Collectors.counting())));
+
+
+                - Output:
+
+
+                        {Cloud=4, FullStack=1, Microservices=2, Framework=2}
+
+
+        - Among 4 Course , whichever one is the highest reviewed Course:
+                        
+
+                  System.out.println(courses.stream()
+                        .collect(Collectors.groupingBy(
+                            Course::getCategory, Collectors.maxBy(Comparator.comparing(Course::getReviewScore)))));
+
+
+                - Output:
+
+
+                        {Cloud=Optional[Azure:21000:99], FullStack=Optional[FullStack:14000:91],
+                         Microservices=Optional[API:22000:97], Framework=Optional[Spring:20000:98]}
+
+
+        - Instead of mapping a complete Course, ust map the name of the Course,
+          So, instead of mapping the entire Course to that specific list,
+          we would want to create a list just with names of the course:
+
+            Collectors.mapping(mapper, downstream)
+
+                - Here we need to define what do we want to use:
+
+
+
+                
+CREATING A STREAMS USING STREAM OF METHOD AND FOR ARRAYS:
+
+
+        
+
+            
+
+
+
 
 
 

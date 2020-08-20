@@ -3,6 +3,7 @@ package programming;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.zip.CheckedOutputStream;
 
@@ -72,6 +73,71 @@ public class FP04CustomClass {
                 .sorted(comparingByNumberOfStudentsAndReviews)
                 .limit(5)
                 .collect(Collectors.toList()));
+
+        System.out.println(courses.stream()
+                .sorted(comparingByNumberOfStudentsAndReviews)
+                .skip(3)
+                .collect(Collectors.toList()));
+
+
+        System.out.println(courses);
+
+        System.out.println(courses.stream()
+                .takeWhile(course ->  course.getReviewScore() >= 95)
+                .collect(Collectors.toList()));
+
+        System.out.println(courses.stream()
+                .dropWhile(course ->  course.getReviewScore() >= 95)
+                .collect(Collectors.toList()));
+
+
+        System.out.println(courses.stream()
+                .max(comparingByNumberOfStudentsAndReviews)
+                .orElse(new Course("Kubernetes", "Cloud", 91, 20000)));
+
+        System.out.println(courses.stream()
+                .min(comparingByNumberOfStudentsAndReviews)
+                .orElse(new Course("Kubernetes", "Cloud", 91, 20000)));
+
+        System.out.println(courses.stream()
+                .filter(reviewScoreGreaterThan90Predicate)
+                .findFirst());
+
+        System.out.println(courses.stream()
+                .filter(reviewScoreGreaterThan90Predicate)
+                .findAny());
+
+        System.out.println(courses.stream()
+                .filter(reviewScoreGreaterThan90Predicate)
+                .mapToInt(Course::getNumberOfStudents)
+                .sum());
+
+        System.out.println(courses.stream()
+                .filter(reviewScoreGreaterThan90Predicate)
+                .mapToInt(Course::getNumberOfStudents)
+                .average());
+
+        System.out.println(courses.stream()
+                .filter(reviewScoreGreaterThan90Predicate)
+                .mapToInt(Course::getNumberOfStudents)
+                .max());
+
+
+        System.out.println(courses.stream()
+                .collect(Collectors.groupingBy(Course::getCategory)));
+
+        System.out.println(courses.stream()
+                .collect(Collectors.groupingBy(Course::getCategory, Collectors.counting())));
+
+
+        System.out.println(courses.stream()
+                .collect(Collectors.groupingBy(
+                        Course::getCategory, Collectors.maxBy(Comparator.comparing(Course::getReviewScore)))));
+
+        System.out.println(courses.stream()
+                .collect(Collectors.groupingBy(
+                        Course::getCategory, Collectors.mapping(Course::getName, Collectors.toList()))));
+
     }
 }
 

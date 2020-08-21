@@ -1030,16 +1030,264 @@ GROUPING COURSES TO A MAP USING GROUPINGBY:
                 
 CREATING A STREAMS USING STREAM OF METHOD AND FOR ARRAYS:
 
+        - Until now to create a Stream  we created  a List and we created a Stream from it:
+
+
+                List<Integer> numbers = List.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+
+                numbers.stream();
+
+
+        - Another option is Stream.of(): 
+
+
+                Stream.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
 
         
-
+                Stream<Integer> stream = Stream.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+                System.out.println(stream.count());
+                Stream<Integer> stream1 = Stream.of(12, 9, 13, 4, 6, 2, 4, 12, 15);
+                System.out.println(stream1.reduce(0, Integer::sum));
             
 
 
+        - Streams with Primitive Values:
+
+
+                int[]  numberArray = {12, 9, 13, 4, 6, 2, 4, 12, 15};
+
+                Arrays.stream(numberArray);
+
+                    - This is Stream of Primitive Types, can use sum, average...
+
+                System.out.println(Arrays.stream(numberArray).sum());
+                System.out.println(Arrays.stream(numberArray).average());
+
+                IntStream intStream = Arrays.stream(numberArray);
+                intStream.sum();
+        
+
+        - Both the Streams contains elements of Integer wrapper classes.
+
+        - To create Stresm with Primitive Values, there are options:
+
+            - Use  array as source to create a stream (IntPipeline is the Type of Stream) and
+              with this way we can very easy to do a sum, average, min, max anf those kinf ofoperations
 
 
 
+CREATING STREAMS FOR FIRST 100 NUMBERS. SQUARES OF NUMBERS AND MORE:
 
+
+        - How to createa stream of primitive values much more dynamically:
+
+        - I would want to create a stream with the first hundres Integers or I'd want to create a stream with just 
+          even numbers or odd numbers or I'd want to use a speific algorithm to create a stream. 
+
+
+                IntStream.range(1, 10).sum()    
+
+                    - the range() operation excludes the last number;
+
+                System.out.println(IntStream.rangeClosed(1, 10).sum());
+
+                    - the rangeClosed() includes the last number;
+
+
+        - The peek() method will allow us to look into this Stream without making any changes to the actual Stream,
+          so I can try to print all the values that are part of the Stream:
+
+        - iterate() for making custom algorithm;
+        
+            IntStream.iterate(1, e -> e + 2).limit(10).peek(System.out::println).sum();
+
+            System.out.println(IntStream.iterate(1, e -> e + 2).limit(10).peek(System.out::println).sum());
+
+
+        - print first Even numbers with SOUT and print their SUM:
+
+                System.out.println(IntStream.iterate(2, e -> e + 2).limit(10).peek(System.out::println).sum());
+
+        - print powers of 2 - limit 10:
+
+                System.out.println(IntStream.iterate(1, e -> (int)Math.pow(2, e)).limit(10).peek(System.out::println).sum());
+
+                or:
+
+                System.out.println(IntStream.iterate(2, e -> e * 2).limit(10).peek(System.out::println).sum()); 
+
+
+        - If you'd want to convert Primitive Stream into a List, there is a specific thing, that you need to understand:
+
+            - Before we actuaaly apply a collect()  to a primitive streams, we need to do something called a Boxed Operation:
+
+                IntStream.iterate(2, e -> e * 2).limit(10)
+                .boxed()
+                .collect(Collectors.toList());
+
+            - This is because the values in the stream are primitive. 
+
+            - We need to box them into actually a Wrapper Class before we actually collect them to a list.
+
+
+        - Just like IntStream there are interfaces like  DoubleStream, LongStream , which would help you with creating streams of
+          primitive values for double, int , long.
+
+
+
+BIG NUMBER CALCULATION WITH BIG INTEGER:
+
+
+        - How actually do calculations with really BIG values:
+
+
+                    IntStream.rangeClosed(1, 50).reduce(1 , (x, y) -> x * y);
+        
+
+        - Here the result will be 0, because the result exceeds the Integer Max value;
+
+        - In this kind of situation we can use of something called Big Integer:
+
+                IntStream.rangeClosed(1, 50)
+                    .mapToObj(BigInteger::valueOf)
+                    .reduce(BigInteger.ONE , BigInteger::multiply);
+
+
+
+JOINING STRINGS, FLATMAP:
+
+
+        - Let's say I have a List of Strings - List Of Course Names. And I want to combine all of them,
+          separated by a comma.
+
+        - I need collect(Collectors.joining(" "))    - and pass in the separator:
+
+
+                courses.stream()
+                    .collect(Collectors.joining(", ")));
+
+
+        - I need to look at all the characters which are present in each one of these strings:
+
+
+                Arrays.toString("Spring".split(""))    -  array with individual characters
+
+        - flatMap() - we are flatting the array of strings and now, at the end of operation, we have one stream with all individual
+          strings, all strings containing one character each, and now I can do collect(Collectors.toList())
+
+
+                courses.stream()
+                    .map(course -> course.split(""))
+                    .flatMap(Arrays::stream)
+                    .collect(Collectors.toList())
+
+
+        - Let's say I'd want only the distinct characters:
+
+
+                courses.stream()
+                    .map(course -> course.split(""))
+                    .flatMap(Arrays::stream)
+                    .distinct()
+                    .collect(Collectors.toList())
+
+
+                => now we get all the distinct characters which a present in our course title.
+
+
+        - In Java Doc for the flatMap() operation, it says:
+
+            "Returns a stream consisting of the results of replacing each element of the stream with the contents 
+             of a mapped stream provided by applying the provided Mapping Function to each element"
+
+            - Возвращает стрим, содержащий результаты замены каждого элемента стрима содержимым замапленного стрима,
+              предоставленные применением Функции Отобраения к каждому элементу.
+
+
+            - The result we got from the map operation was a Stream of String Arrays.
+
+            - What we want to do - we want to flatting the String Arrays and we would want ti create a Stream of Strings.
+
+            - Each of the String Arrays which were present in the Stream, we wanted to flatting  it out and that's where
+            the flapMap() helps us.
+
+
+        - Another case is - we have the list of Courses and overe here, you an see that  there are a few elements 
+          with the same number of characters.
+
+          => We'd want to identify pairs of these Courses which have the same number of Characters present in them.
+
+            => All the Strinsg which have the same length.
+
+            - What we are doing - We taking each of the Course from the List and trying to map with each of the courses in this
+              specific list and we are creating a List out of it. 
+
+            - And then we would want to cllet them into a single List.
+
+                    courses.stream()
+                        .flatMap(
+                                course -> courses2.stream()
+                                        .map(course2 -> List.of(course, course2)))
+                        .collect(Collectors.toList());
+
+                
+                =>  As result - we joined each of the elements  in the First List with each of the elements in the Second List.
+
+                    => It's like a Matrix
+
+                    => You can see that eah element  of the Stream is a List of Two Elements.
+
+
+            - And now I'd want to look out for elements which have the same length.
+
+                - One the important things to note is that, if I do length of Spring and the length of Spring here,
+                  it would return the same thing. 
+
+                    => Spring, Spring;   Spring Boot, Spriing Boot...
+
+                        - all those elements would come by default. And we don't want them at all.
+
+                        => What we can do - try to filter them:
+
+
+                        => So, I'll go here and actually first try and filter out the elements where both 
+                           the elements are the same.
+
+                           - So, we'd want to filter out  those things where both list dot  first element and list dot
+                             seond element.
+
+                            - List dot element at index 0 and List dot element at index 1 are the same.
+
+                            - How can we do a Filter:
+
+                            => Take  the List and check if list.get(0) equals list.get(1)
+
+
+                            System.out.println(
+                                    courses.stream()
+                                            .flatMap(
+                                                    course -> courses2.stream()
+                                                            .map(course2 -> List.of(course, course2)))
+                                            .filter(list -> !list.get(0).equals(list.get(1)))
+                                            .collect(Collectors.toList())
+                            );
+
+            - The next thing - is a filter based on the Length.
+
+
+                    courses.stream()
+                        .flatMap(
+                                course -> courses2.stream()
+                                        .filter(course2 -> course2.length()  == course.length() )
+                                        .map(course2 -> List.of(course, course2)))
+                        .filter(list -> !list.get(0).equals(list.get(1)))
+                        .collect(Collectors.toList())
+
+
+
+        => FlatMap helps us in Flatting a Stream of Values.
+
+            - So, if you have a Stream of String Arrays, you can flatting it into a Ztream of Strings.
 
 
 

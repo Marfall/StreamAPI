@@ -1287,10 +1287,158 @@ JOINING STRINGS, FLATMAP:
 
         => FlatMap helps us in Flatting a Stream of Values.
 
-            - So, if you have a Stream of String Arrays, you can flatting it into a Ztream of Strings.
+            - So, if you have a Stream of String Arrays, you can flatting it into a Stream of Strings.
 
 
 
 
+CREATING HIGH ORDER FUNCTIONS:
 
+
+        High Order Function:
+
+            - Is a Function which returns a Function.
+
+
+                    Predicate<Course> revewScoreGreaterThan95Predicate2
+                            = course -> course.getReviewScore() > 95;
+
+                    Predicate<Course> revewScoreGreaterThan90Predicate2
+                            = course -> course.getReviewScore() > 90; 
+
+
+
+                        int cutOffReviewScore = 95;
+
+                         Predicate<Course> revewScoreGreaterThan95Predicate2
+                                    = createPredicateWithCutOfReviewSore(cutOffReviewScore);
+
+
+                        private static Predicate<Course> createPredicateWithCutOfReviewSore(int cutOffReviewScore) {
+                            return course -> course.getReviewScore() > cutOffReviewScore;
+                        }     
+
+
+                        - This method returns another predicate, it's returning logic back.
+
+
+            => We are able to srore methods as:
+
+                    - local variables;
+
+                    - as parameters
+
+                    - returning methos from a method
+
+
+
+
+INTERMEDIATE STREAM OPERATIONS ARE LAZY:
+
+
+        - It's very easy to write performant code with Functional Programming;
+
+        - In this days of Multicore Processors, you can actually parallelize the functional code much much more
+          easily than structured code.
+
+
+        - For example  I would want to get all the courses  whose length is greater than a specific number and then I would
+          want to UpperCase them and then I would want to find the first among them:
+
+
+
+                     courses.stream()
+                        .filter(course -> course.length() > 11)
+                        .map(String::toUpperCase)
+                        .findFirst();
+
+
+        - What's happening in the background of this?
+
+        -     courses.stream()
+                .peek(System.out::println)
+                .filter(course -> course.length() > 11)
+                .map(String::toUpperCase)
+                .peek(System.out::println)
+                .findFirst();
+
+
+        - The result is:
+
+                Spring
+                Spring Boot
+                API
+                Microservices
+                MICROSERVICES
+
+        - The interesting thing is, we did not check for the other elements which are present inside the list.
+
+        - We only want to find the first element;
+
+        => So, what happened is, as soon as it finds the first element, it does not even look at the other elements.
+
+
+        - Traditionally, the code that we write in this style - what would happen? 
+
+            - We have a Stream and we are executing a filter on this Stream
+
+            - So typically we'd execute this filter on all the things and get a list of filtered stuff,
+
+            - And after that, we would map everything toUpperCase and after that, among teh list which comes up,
+              we try and find the first one.
+
+            - However, you can see that with Functional Programming, it's much much much more effiient:
+
+            - It knows that I need only one element. So, what it does - it starts looking at the element one at a time.
+
+            - It tries to filter. If  it doesn't go through the filter, then it takes the next element.
+
+            - It checks until it finds one element, because I would want to do findFirst() and once
+              it finds that element, it does a UpperCase and it returns that specific value back;
+
+
+            => So, you can see that with Functional Programming, writing highly performant code is much much more
+              easier.
+
+
+        - How this happening in the background? 
+          How does Java achieve this?
+          How do Streams work?
+
+          - The interesting thing about Streams is the fact that all the Intermediate Operations:
+
+                - peek
+                - filter
+                - map
+            
+            - They are returning a Stream back.
+
+            - They are executed on a Stream and they return a Stream back.
+
+            - The thing with all the Intermediate Operations in Java is that they are all Lazy.
+
+            - So, they are not really executed when I'm executing this peace of code;
+
+            - THEY ARE ONLY EXECUTED WHEN I EXECUTE THE TERMINAL OPERATION WHICH IS THE FINDFIRST();
+
+            => JAVA EXECUTES THIS SET OF CODE ONLY WHEN IT KNOWS WHAT IS THE EXPECTED RESULT.
+
+            => SO, WHEN YOU ARE DEFINING THE INTERMEDIATE OPERATIONS, NOTHING WOULD BE EXECUTED.
+
+                    (CTRL - SHIFT - P) = get console command to upper case.
+
+            - And because the before the Terminal Operation executed at the time of executing the Terminal Operation,
+              the Programming language knows  what are you looking for. 
+
+            - So, what it does - it does not execute all the stuff at the time.
+              
+            - It takes an efficient approach and as soon as it finds one element, it says I'm fine, I have the element,
+              I have the result value. I'll return back.
+
+
+
+IMPROVING PERFORMANCE WITH PARALLELIZATION OF THE STREAMS:
+
+
+        
 

@@ -5,11 +5,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import java.util.zip.CheckedOutputStream;
 
 public class FP04CustomClass {
     public static void main(String[] args) {
@@ -173,6 +171,19 @@ public class FP04CustomClass {
         IntStream.rangeClosed(1, 50)
                 .mapToObj(BigInteger::valueOf)
                 .reduce(BigInteger.ONE , BigInteger::multiply);
+
+
+        int cutOffReviewScore = 95;
+
+        Predicate<Course> revewScoreGreaterThan95Predicate2
+                = createPredicateWithCutOfReviewSore(cutOffReviewScore);
+
+        Predicate<Course> revewScoreGreaterThan90Predicate2
+                = course -> course.getReviewScore() > 90;
+    }
+
+    private static Predicate<Course> createPredicateWithCutOfReviewSore(int cutOffReviewScore) {
+        return course -> course.getReviewScore() > cutOffReviewScore;
     }
 }
 

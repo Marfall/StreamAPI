@@ -1440,5 +1440,171 @@ INTERMEDIATE STREAM OPERATIONS ARE LAZY:
 IMPROVING PERFORMANCE WITH PARALLELIZATION OF THE STREAMS:
 
 
+        - When we write code, we would want to make use of processor cores. 
+
+        - Let's say I'd want to a huge operation. Let's say I have a sequence of Streams or actually sequence of long values:
+
+
+                LongStream.range(0, 1000000000)
+                    sum());
+
+        - Now, I want to know how much time it took:
+
+                long time = System.currentTimeMillis();
+
+                System.out.println(LongStream.range(0, 1000000000)
+                        .sum());
+
+                System.out.println(System.currentTimeMillis() - time);
+
+
+        - Now I want to run this peace of thing in Parallel:
+
+
+                - All that I need to do for use all cores - parallel() before sum():
+
+
+                        System.out.println(LongStream.range(0, 1000000000).parallel()
+                             .sum());
+
+        - Why is it easy to parallelize Functional Code, Why can't I parallelize Structured Code?
+
+
+                - The problem with Structured Code, typically, is that we have a lot of State presents.
+                
+                - You have a variable whose value is changing all the time.
+
+                - When we use Stream - we defined what operation need to be done on that specific Stream.
+
+                - Now, if I add a .parallel() here, then we are telling Java that we can execute this Stream
+                  in a Parallel Way.
+
+                - What Java do is, actually split the Stream into multiple parts and execute these operations on those 
+                  and finally, combine the results of all those multiple parts.
+
+
+
+
+MODIFYING LIST WITH REPLACEALL AND REMOVEIF:
+
+
+
+        - We have a List of Courses. And I want to change all the elements in here directly to UpperCase.
+
         
+        - replaceAll() accepts a Function as a Parameter, so I can specify what needs to be done.
+
+
+             List<String> courses = List.of("Spring", "Spring Boot", "API", "Microservices", "AWS", "PCF", "Azure", "Docker", "Kubernetes");
+
+            List<String> modifyableCourses  = new ArrayList<>(courses);
+
+            modifyableCourses.replaceAll(str -> str.toUpperCase());
+
+            System.out.println(modifyableCourses);
+
+        
+        - Here we make courses modifyable with new ArrayList.
+
+        - In replaceAll() you can pass the logi of how you can have the elements updated.
+
+        - You can also remove elements from the list based on certain criteria:
+
+
+                modifyableCourses.removeIf(course -> course.length() < 6);
+
+        
+
+
+FILES USING FUNCTIONAL PROGRAMING:
+
+
+        - We want to read the content of file:
+
+                Files.lines(Paths.get("file.txt"))
+                    .forEach(System.out::println);
+
+        - You can see that our peace of text is printed out to the console.
+
+        - So, reading files with Functional Programming is very easy, all that we need to do is:
+
+            - do a lines() and get the content of the file with Paths.
+
+
+        - Find unique words in file:
+
+
+            - We need to split the strings with map and split(" "),
+              So, each line is split into an array of Strings, so we have a Stream of Array of Strigs;
+
+            - We'd want to convert that into a single Stream with Strings 
+
+
+                    Files.lines(Paths.get("file.txt"))
+                        .map(str -> str.split(" "))
+                        .flatMap(Arrays::stream)                    .flatMap(array -> Arrays.stream(array)
+                        .distinct()
+                        .sorted()
+                        .forEach(System.out::println);
+
+            - We can get a list of directories in the root of project:
+ 
+                Files.list(Paths.get("."))          //root of the project
+                     .filter(Files::isDirectory)
+                    .forEach(System.out::println);
+
+
+
+
+THREADS WITH FUNCTIONAL PROGRAMMING:
+
+
+        - How we typically create a Threads?
+
+            - We create either an implementation of the Runnable Interface or
+             
+              We create an extension of Thread Class.
+
+
+                        Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                for (int i = 0; i < 1000; i++) {
+                                    System.out.println(Thread.currentThread().getId() + ":" + i);
+                                }
+                            }
+                        };
+
+                        Thread thread1 = new Thread(runnable);
+                        thread1.start();
+
+                        Thread thread2 = new Thread(runnable);
+                        thread2.start();
+
+
+
+            - The same thing using Functional Programming:
+
+
+                        unnable runnable1 = () ->  {
+                                for (int i = 0; i < 1000; i++) {
+                                    System.out.println(Thread.currentThread().getId() + ":" + i);
+                                }
+                        };
+
+                        Thread thread4 = new Thread(runnable1);
+                        thread4.start();
+
+
+            - We don't accept any parameters and we don't really return anything back.
+
+
+
+
+
+
+
+
+
+
 
